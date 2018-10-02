@@ -1,6 +1,8 @@
 var request = require('request');
 var secrets = require('./secrets.js');
 var fs = require('fs')
+var arg1 = process.argv[2];
+var arg2 = process.argv[3];
 
 function getRepoContributors(repoOwner, repoName, cb) {
   var options = {
@@ -47,8 +49,14 @@ function downloadImageByURL(url, filePath) {
        .pipe(fs.createWriteStream(filePath));
 }
 
-getRepoContributors("jquery", "jquery", function(err, data) {
-  for (var index of data) {
-    downloadImageByURL(index.avatar_url, "avatars" + "/" + index.login + ".jpg");
+if (!arg1 || !arg2) {
+    console.log("Please provide two arguments");
+    process.exit();
   }
+
+getRepoContributors(arg1, arg2, function(err, data) {
+
+    for (var index of data) {
+      downloadImageByURL(index.avatar_url, "avatars" + "/" + index.login + ".jpg");
+    }
 });
